@@ -1,28 +1,31 @@
-import React from 'react'
+import React from 'react';
 
-export default function (props) {
-    const {cancelAddGroup, createGroup} = props;
+export default function CreateGroupForm(props) {
+    const { cancelAddGroup, createGroup } = props;
 
     function handleSubmit(e) {
         e.preventDefault();
         const input = e.target.querySelector('textarea');
         const text = input.value;
-        if (!text) return
-        
+        if (!text) return;
+
         input.value = '';
-        
+
         const date = Date.now();
 
         const item = {
             id: date,
             title: text,
             date,
-            tasks: []
-        }
+            tasks: [],
+        };
+
+        // Store the new group in localStorage
+        const groupId = `group_${date}`;
+        localStorage.setItem(groupId, JSON.stringify(item));
 
         createGroup(item);
         cancelAddGroup(e);
-        
     }
 
     return (
@@ -33,5 +36,5 @@ export default function (props) {
             <button className="btn btn-primary">Add</button>
             <button onClick={cancelAddGroup} className="btn btn-link">Cancel</button>
         </form>
-    )
+    );
 }

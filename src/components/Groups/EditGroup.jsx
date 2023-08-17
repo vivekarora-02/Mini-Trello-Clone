@@ -1,6 +1,7 @@
 import React from 'react'
 
 export default function (props) {
+    
     const {currentTitleGroup, deleteGroup, updateGroup, cancelClickGroup, onChangeGroup} = props;
 
     function handleSubmit(e) {

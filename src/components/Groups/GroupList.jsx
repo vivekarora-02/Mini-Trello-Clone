@@ -1,25 +1,31 @@
-import React, { Component } from 'react'
-import 'bootstrap/dist/css/bootstrap.css'
+import React, { Component } from 'react';
+import 'bootstrap/dist/css/bootstrap.css';
 import Sortable from 'sortablejs';
 
-// import groups from '../fixtures'
-import Group from './Group'
-import AddGroup from './AddGroup'
+import Group from './Group';
+import AddGroup from './AddGroup';
+import AddTaskForm from '../Tasks/AddTask';
 
-export default class extends Component {
+export default class Dashboard extends Component {
     state = {
         data: [],
         currentIDGroup: null,
+        isAddGroup: false,
+
         currentIndexGroup: null,
         currentTitleGroup: null,
-
         currentIDTask: null,
         currentIndexTask: null,
         currentTitleTask: null,
         currentDescriptionTask: '',
 
-        isAddGroup: false,
     }
+
+    handleClickAddTask = () => {
+        if (!this.props.isUserSignIn) return;
+
+        this.setState({ isAddTask: true });
+    };
 
     handleClickGroup = (id) => {
         if (id === this.state.currentIDGroup) return
@@ -72,86 +78,108 @@ export default class extends Component {
         
         return {currentIndexGroup, currentIndexTask};
     }
-
+    componentDidMount() {
+        const storedData = localStorage.getItem('groupData');
+        if (storedData) {
+            this.setState({ data: JSON.parse(storedData) });
+        }
+    }
     createGroup = (item) => {
         this.state.data.push(item);
+
+        // Save updated data to localStorage
+        localStorage.setItem('groupData', JSON.stringify(this.state.data));
 
         this.setState({
             data: this.state.data,
             isAddGroup: false,
-        })
-
+        });
     }
 
     updateGroup = (title) => {
+        // ...updateGroup logic
         const groupClone = this.state.data[this.state.currentIndexGroup];
         groupClone.title = title;
         this.state.data.splice(this.state.currentIndexGroup, 1, groupClone);
-        this.setState({data: this.state.data})
+
+        // Save updated data to localStorage
+        localStorage.setItem('groupData', JSON.stringify(this.state.data));
+
+        this.setState({ data: this.state.data });
     }
 
     deleteGroup = () => {
+        // ...deleteGroup logic
         this.state.data.splice(this.state.currentIndexGroup, 1);
 
-        this.setState({ data: this.state.data })
+        // Save updated data to localStorage
+        localStorage.setItem('groupData', JSON.stringify(this.state.data));
+
+        this.setState({ data: this.state.data });
     }
 
     createTask = (item) => {
+        // ...createTask logic
         this.state.data[this.state.currentIndexGroup].tasks.push(item);
 
-        this.setState({
-            data: this.state.data,
-        })
+        // Save updated data to localStorage
+        localStorage.setItem('groupData', JSON.stringify(this.state.data));
+
+        this.setState({ data: this.state.data });
     }
 
     updateTask = (title, description) => {
+        // ...updateTask logic
         const taskClone = this.state.data[this.state.currentIndexGroup].tasks[this.state.currentIndexTask];
         taskClone.title = title;
         taskClone.description = description;
         this.state.data[this.state.currentIndexGroup].tasks.splice(this.state.currentIndexTask, 1, taskClone)
-        this.setState({data: this.state.data})
+        // Save updated data to localStorage
+        localStorage.setItem('groupData', JSON.stringify(this.state.data));
+
+        this.setState({ data: this.state.data });
     }
 
     deleteTask = () => {
+        // ...deleteTask logic
         this.state.data[this.state.currentIndexGroup].tasks.splice(this.state.currentIndexTask, 1);
 
-        this.setState({ data: this.state.data })
+        // Save updated data to localStorage
+        localStorage.setItem('groupData', JSON.stringify(this.state.data));
+
+        this.setState({ data: this.state.data });
     }
 
     sortableContainersDecorator = (componentBackingInstance) => {
-        // check if backing instance not null
         if (componentBackingInstance) {
             let options = {
-                animation: 150, // ms, animation speed moving items when sorting, `0` — without animation
-                handle: ".title", // Restricts sort start click/touch to the specified element
-                // onUpdate: function (evt/**Event*/){
-                //     var item = evt.item; // the current dragged HTMLElement
-                // }
+                animation: 150,
+                handle: ".title",
             };
             Sortable.create(componentBackingInstance, options);
         }
     };
 
     sortableGroupDecorator = (componentBackingInstance) => {
-        // check if backing instance not null
         if (componentBackingInstance) {
             let options = {
-                animation: 150, // ms, animation speed moving items when sorting, `0` — without animation
-                draggable: ".tasks__item", // Specifies which items inside the element should be sortable
+                animation: 150,
+                draggable: ".tasks__item",
                 group: "shared",
-                // onUpdate: function (evt/**Event*/){
-                //     var item = evt.item; // the current dragged HTMLElement
-                // }
             };
             Sortable.create(componentBackingInstance, options);
         }
     };
 
-    render() {
-        console.log(this.props)
+    handleClickAddGroup = () => {
+        if (!this.props.isUserSignIn) return;
+        
+        this.setState({ isAddGroup: true });
+    };
 
-        const groupElement = this.state.data.map(group =>
-            <Group 
+    render() {
+        const groupElement = this.state.data.map(group => (
+            <Group
                 {...this.props}
                 sortableGroupDecorator={this.sortableGroupDecorator}
                 onClickGroup={this.handleClickGroup}
@@ -174,8 +202,9 @@ export default class extends Component {
                 deleteTask={this.deleteTask}
                 onChangeTask={ ({ target }) => this.setState({currentTitleTask: target.value}) }
                 onChangeTaskDescription={ ({ target }) => this.setState({currentDescriptionTask: target.value}) }
+
             />
-        )
+        ));
 
         return (
             <div className="dashboard container-fluid">
@@ -185,19 +214,26 @@ export default class extends Component {
 
                     <div className="groups__item">
                         <div className="inner">
-                        
-                            {this.state.isAddGroup
-                                ? <AddGroup
-                                    cancelAddGroup={ () => this.setState({ isAddGroup: false }) }
+                            {this.state.isAddGroup ? (
+                                <AddGroup
+                                    cancelAddGroup={() => this.setState({ isAddGroup: false })}
                                     createGroup={this.createGroup}
                                 />
-                                : <div onClick={this.handleClickAddGroup}>Add a new group...</div>
-                            }
-
+                            ) : (
+                                <div onClick={this.handleClickAddGroup}>Add a new group...</div>
+                            )}
+                            {this.state.isAddTask && (
+                                <AddTaskForm
+                                    groupID={this.state.currentIDGroup} // Pass the current group ID
+                                    createTask={this.createTask}
+                                    cancelAddTask={() => this.setState({ isAddTask: false })}
+                                />
+                            )}
+        
                         </div>
-                    </div> 
+                    </div>
                 </div>
             </div>
-        )
+        );
     }
 }

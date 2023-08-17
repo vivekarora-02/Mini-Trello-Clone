@@ -1,13 +1,13 @@
-import React from 'react'
+import React from 'react';
 
-export default function (props) {
-    const {cancelAddTask, createTask} = props;
+export default function AddTaskForm(props) {
+    const { cancelAddTask, createTask } = props;
 
     function handleSubmit(event) {
-        event.preventDefault()
+        event.preventDefault();
         const input = event.target.querySelector('textarea');
         const text = input.value;
-        if (!text) return
+        if (!text) return;
 
         input.value = '';
 
@@ -20,10 +20,17 @@ export default function (props) {
             "due date": date,
             date,
             attachments: []
-        }
+        };
+
+        // Retrieve existing task data from localStorage
+        const existingTasks = JSON.parse(localStorage.getItem('tasks')) || [];
+        // Add the new task to the array
+        existingTasks.push(item);
+        // Save the updated task data back to localStorage
+        localStorage.setItem('tasks', JSON.stringify(existingTasks));
 
         createTask(item);
-        cancelAddTask(event)
+        cancelAddTask(event);
     }
 
     return (
@@ -34,5 +41,5 @@ export default function (props) {
             <button className="btn btn-primary">Add</button>
             <button onClick={cancelAddTask} className="btn btn-link">Cancel</button>
         </form>
-    )
+    );
 }

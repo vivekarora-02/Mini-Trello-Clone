@@ -5,10 +5,15 @@ import ModalSignIn from './ModalSignIn';
 import Header from './Header';
 
 export default class extends Component {
-    state = {
-        isUserSignIn: '',
-        isModalOpen: false,
+    constructor(props) {
+        super(props);
+        const storedEmail = localStorage.getItem('storedEmail') || '';
+        this.state = {
+            isUserSignIn: storedEmail,
+            isModalOpen: false,
+        };
     }
+
 
     toggleSignIn = () => {
         const { isUserSignIn, isModalOpen } = this.state;
