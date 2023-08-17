@@ -5,6 +5,11 @@ Welcome to the Mini Trello Clone project! This repository contains the frontend 
 
 ![Screenshot](https://github.com/vivekarora-02/Mini-Trello-Clone/blob/master/Image.png)
 
+## Demo Video
+
+[Demo Video](https://youtu.be/Db-QZTyrwAY)
+
+
 ## Project Scope
 
 The objective of this project is to create a basic version of Trello with the following key features:
@@ -22,6 +27,10 @@ The frontend of the Mini Trello Clone demonstrates the following functionalities
 - Allow users to create tasks within each group.
 - Implement drag-and-drop functionality to manage tasks within and between stages.
 - Data Persistence: Upon refreshing the page, the data remains intact, ensuring that tasks and stages are preserved.
+  - To achieve data persistence upon refreshing the page, the Mini Trello Clone utilizes the browser's Local Storage.
+    Local Storage allows us to store key-value pairs in the user's browser, providing a simple and effective way to retain data between page reloads.
+
+
 
 ## Future Scenarios
 
