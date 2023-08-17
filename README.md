@@ -21,6 +21,7 @@ The frontend of the Mini Trello Clone demonstrates the following functionalities
 - Enable users to add new groups (boards).
 - Allow users to create tasks within each group.
 - Implement drag-and-drop functionality to manage tasks within and between stages.
+- Data Persistence: Upon refreshing the page, the data remains intact, ensuring that tasks and stages are preserved.
 
 ## Future Scenarios
 
